@@ -8,7 +8,7 @@ public class MP1napud {
         A.printMatrix();
         System.out.println("Matrix B");
         B.printMatrix();
-
+//lol
         System.out.println("----------------------------------------------------------------------");
 
         int yorn = 0;
