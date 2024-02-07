@@ -1,20 +1,31 @@
 import java.util.*;
 public class MP1napud {
     public static Scanner scan = new Scanner(System.in);
+    public static int count;
+    public static Matrix[] matrices = new Matrix[100];
     public static void main (String[] args){
-        Matrix A = createMatrix("A");
-        Matrix B = createMatrix("B");
-        System.out.println("Matrix A");
+        Matrix A = createMatrix("1");
+        matrices[count] = A;
+        count++;
+        Matrix B = createMatrix("2");
+        matrices[count] = B;
+        count++;
+        System.out.println("Matrix 1");
         A.printMatrix();
-        System.out.println("Matrix B");
+        System.out.println("Matrix 2");
         B.printMatrix();
-//lol
-        System.out.println("----------------------------------------------------------------------");
+
+        showMatrices(matrices, count);
+
 
         int yorn = 0;
         do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
         {
-            operations(A, B);
+            Matrix C = operations();
+            if(C!=null) {
+                matrices[count] = C;
+                count++;
+            }
             do
            /*this do-while loop handles the choice "yes or no". Within the loop it analyses the user's input. this loop ends whether the user inputs a yes
               or a no regardless. however, if the user inputs a yes, the whole code will run again, but if the user inputs a no, the program will end.*/
@@ -40,7 +51,7 @@ public class MP1napud {
                     yorn=0;
                 }
             }while(yorn!=1);
-        }while(yorn==1);
+        }while(true);
     }
     public static Matrix createMatrix(String name) {
         System.out.println("----------------------------------------------------------------------");
@@ -63,15 +74,15 @@ public class MP1napud {
         }
         return new Matrix(matrix);
     }
-    public static void operations(Matrix m1, Matrix m2){
-        System.out.println("Choose an option: 0-adding matrices, 1-multiplying matrices, 2-multiplying a matrix w/ a constant,");
+    public static Matrix operations(){
+        System.out.println("Choose an option: 0-adding matrices, 1-multiplying matrices, 2-multiplying a matrix w/ a constant, 3-diagonalizing a matrix, 4-show made matrices");
         int choice = -1;    //setting up for choices.
         do  //error trapping for choices, traps out input that are not of the choices indicated and non integer inputs.
         {
             try
             {
                 choice = Integer.parseInt(scan.nextLine());
-                if(choice<0 || choice>3) //this code runs if input is now an integer
+                if(choice<0 || choice>4) //this code runs if input is now an integer
                 {
                     System.out.println("Input should be within range. Try again.");
                 }
@@ -80,89 +91,164 @@ public class MP1napud {
             {
                 System.out.println("Input numbers only. Try again.");
             }
-        }while(choice<0 || choice>3);
+        }while(choice<0 || choice>4);
+
+        Matrix result = null;
+
         switch(choice)  //choices laid out in different cases to run the intended method. does not need a default since "choice" is by default only within the range of the choices because of the error trapping.
         {
             case 0:
-                if(m1.getMatrix().length!=m2.getMatrix().length || m1.getMatrix()[0].length!=m2.getMatrix()[0].length) {
-                    System.out.println("Matrix size are not equal, cannot do operation.");
+                if(count>2){
+                    System.out.println("Choose which matrices you want to add:");
+                    int num = 0;
+                    int[] option = new int[2];
+                    while(num<2) {
+                        matrixChoice(matrices, count);
+                        option[num] = matrixNum(count);
+                        num++;
+                    }
+                    if (matrices[option[0]-1].getMatrix().length != matrices[option[1]-1].getMatrix().length || matrices[option[0]-1].getMatrix()[0].length != matrices[option[1]-1].getMatrix()[0].length) {
+                        System.out.println("Matrix size are not equal, cannot do operation.");
+                    } else {
+                        System.out.println("Let Matrix "+(count+1)+" = Matrix "+option[0]+" + Matrix "+option[1]);
+                        result = Matrix.add(matrices[option[0]-1], matrices[option[1]-1]);
+                        result.printMatrix();
+                    }
+                    break;
+
                 }
                 else{
-                    System.out.println("Let Matrix C = Matrix A + Matrix B");
-                    Matrix sum = Matrix.add(m1, m2);
-                    sum.printMatrix();
+                    if (matrices[0].getMatrix().length != matrices[1].getMatrix().length || matrices[0].getMatrix()[0].length != matrices[1].getMatrix()[0].length) {
+                        System.out.println("Matrix size are not equal, cannot do operation.");
+                    } else {
+                        System.out.println("Let Matrix 3 = Matrix 1 + Matrix 2");
+                        result = Matrix.add(matrices[0], matrices[1]);
+                        result.printMatrix();
+                    }
+                    break;
                 }
-                break;
             case 1:
-                System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix A, 2-Matrix B");
-                int choose = choose();
-                if(choose==1){
+                if(count>2){
+                    System.out.println("Choose which matrices you want to multiply:");
+                    int num = 0;
+                    int[] option = new int[2];
+                    while(num<2) {
+                        matrixChoice(matrices, count);
+                        option[num] = matrixNum(count);
+                        num++;
+                    }
+                    System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix "+option[0]+", 2-Matrix "+option[1]);
+                    int choose = choose();
+                    if (choose == 1) {
 
-                    if(m1.getMatrix()[0].length!=m2.getMatrix().length) {
-                        System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
-                    }else{
-                        System.out.println("Let Matrix C = Matrix A * Matrix B");
-                        Matrix prod = Matrix.multiply(m1, m2);
-                        prod.printMatrix();
+                        if (matrices[option[0]-1].getMatrix()[0].length != matrices[option[1]-1].getMatrix().length) {
+                            System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                        } else {
+                            System.out.println("Let Matrix "+(count+1)+" = Matrix "+option[0]+" * Matrix "+option[1]);
+                            result = Matrix.multiply(matrices[option[0]-1], matrices[option[1]-1]);
+                            result.printMatrix();
+                        }
+                    } else if (choose == 2) {
+                        if (matrices[option[1]-1].getMatrix()[0].length != matrices[option[0]-1].getMatrix().length) {
+                            System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                        } else {
+                            System.out.println("Let Matrix "+(count+1)+" = Matrix "+option[0]+" * Matrix "+option[1]);
+                            result = Matrix.multiply(matrices[option[1]-1], matrices[option[0]-1]);
+                            result.printMatrix();
+                        }
                     }
                 }
-                else if(choose==2){
-                    if(m2.getMatrix()[0].length!=m1.getMatrix().length){
-                        System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
-                    }else {
-                        System.out.println("Let Matrix C = Matrix B * Matrix A");
-                        Matrix prod = Matrix.multiply(m2, m1);
-                        prod.printMatrix();
+                else {
+                    System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix A, 2-Matrix B");
+                    int choose = choose();
+                    if (choose == 1) {
 
+                        if (matrices[0].getMatrix()[0].length != matrices[1].getMatrix().length) {
+                            System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                        } else {
+                            System.out.println("Let Matrix "+(count+1)+" = Matrix 1 * Matrix 2");
+                            result = Matrix.multiply(matrices[0], matrices[1]);
+                            result.printMatrix();
+                        }
+                    } else if (choose == 2) {
+                        if (matrices[0].getMatrix()[0].length != matrices[1].getMatrix().length) {
+                            System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                        } else {
+                            System.out.println("Let Matrix "+(count+1)+" = Matrix 2 * Matrix 1");
+                            result = Matrix.multiply(matrices[0], matrices[1]);
+                            result.printMatrix();
+                        }
                     }
                 }
                 break;
             case 2:
                 System.out.println("Input a constant that you want to multiply with the matrix.");
                 int constant = integer();
-                System.out.println("Now choose between Matrix A or Matrix B to pair up with the constant. 1-Matrix A, 2-Matrix B");
-                int ch = choose();
-                if(ch==1){
-                    System.out.println("Let Matrix C = Matrix A * "+constant);
-                    Matrix prod = Matrix.multiplyContstant(m1, constant);
-                    prod.printMatrix();
-
-                }
-                else if(ch==2){
-                    System.out.println("Let Matrix C = Matrix B * "+constant);
-                    Matrix prod = Matrix.multiplyContstant(m2, constant);
-                    prod.printMatrix();
-                }
+                System.out.println("Now choose a matrix to be multiplied by a constant:");
+                matrixChoice(matrices, count);
+                int ch = matrixNum(count);
+                System.out.println("Let Matrix "+(count+1)+" = Matrix "+ch+" * "+constant);
+                result = Matrix.multiplyConstant(matrices[ch-1], constant);
+                result.printMatrix();
                 break;
             case 3:
-                System.out.println("Choose between Matrix A or Matrix B to diagonalize. 1-Matrix A, 2-Matrix B");
-                int cho = choose();
-                if(cho==1){
-                    if(m1.getMatrix().length != m1.getMatrix()[0].length) {
-                        System.out.println("Matrix size are not equal, cannot do operation.");
-                    }else{
-                        System.out.println("Input a constant that you want to use to diagonalize the Matrix");
-                        int diag = integer();
-                        System.out.println("Let Matrix C = diagonalized Matrix A");
-                        Matrix dia = Matrix.diagonalize(m1, diag);
-                        dia.printMatrix();
-                    }
+                System.out.println("Choose a matrix to be diagonalized:");
+                matrixChoice(matrices, count);
+                int cho = matrixNum(count);
+                if(matrices[cho-1].getMatrix().length != matrices[cho-1].getMatrix()[0].length) {
+                    System.out.println("Matrix size are not equal, cannot do operation.");
                 }
-                else if(cho==2){
-                    if(m2.getMatrix().length != m2.getMatrix()[0].length) {
-                        System.out.println("Matrix size are not equal, cannot do operation.");
-                    }else{
-                        System.out.println("Input a constant that you want to use to diagonalize the Matrix");
-                        int diag = integer();
-                        System.out.println("Let Matrix C = diagonalized Matrix B");
-                        Matrix dia = Matrix.diagonalize(m1, diag);
-                        dia.printMatrix();
-                    }
+                else{
+                    System.out.println("Input a constant that you want to use to diagonalize the Matrix");
+                    int diag = integer();
+                    System.out.println("Let Matrix "+(count+1)+"= diagonalized Matrix "+cho);
+                    Matrix dia = Matrix.diagonalize(matrices[cho-1], diag);
+                    dia.printMatrix();
                 }
                 break;
-
+            case 4:
+                showMatrices(matrices, count);
+                break;
         }
         System.out.println("----------------------------------------------------------------------");
+        return result;
+    }
+    public static void showMatrices(Matrix[] arr, int count){
+        System.out.println("----------------------------------------------------------------------");
+        System.out.println("Matrices: ");
+        for(int i = 0; i<count; i++){
+            if(arr[i+1]==null){
+                System.out.print("Matrix "+(i+1));
+            }else{
+                System.out.print("Matrix "+(i+1)+", ");
+            }
+        }
+        System.out.println();
+        System.out.println("----------------------------------------------------------------------");
+    }
+    public static void matrixChoice(Matrix[] arr, int count){
+        System.out.print("[");
+        for(int i = 0; i<count; i++){
+            if(arr[i+1]==null){
+                System.out.print((i+1)+"-Matrix "+(i+1));
+            }else{
+                System.out.print((i+1)+"-Matrix "+(i+1)+", ");
+            }
+        }
+        System.out.print("]: ");
+    }
+    public static int matrixNum(int x){
+        try {
+            int choice = Integer.parseInt(scan.nextLine());
+            if(choice<0 || choice>x) {//this code runs if input is now an integer
+                System.out.println("Input should be within range. Try again");
+            }
+            return choice;
+        }
+        catch(NumberFormatException e){  //it catches inputs that are not integers.
+            System.out.println("Input numbers only. Try again.");
+            return matrixNum(x);
+        }
     }
     public static int indexInput(){ //this method handles the index user input, it traps inputs that doesn't fit the criteria (size = (1<=n<=10)) or non integers
         try
@@ -238,8 +324,7 @@ class Matrix{
                 sum[i][j] = m1[i][j] + m2[i][j];
             }
         }
-        Matrix result = new Matrix(sum);
-        return result;
+        return new Matrix(sum);
     }
     //multiplication of two matrices
     public static Matrix multiply(Matrix A, Matrix B){
@@ -249,16 +334,15 @@ class Matrix{
         for(int i = 0; i<m1.length; i++){
             for(int j = 0; j<m2[0].length; j++){
                 prod[i][j] = 0;
-                for(int k = 0; k<m1[0].length; k++){
+                for(int k = 0; k<m1.length; k++){
                     prod[i][j] = prod[i][j] + (m1[i][k] * m2[k][j]);
                 }
             }
         }
-        Matrix result = new Matrix(prod);
-        return result;
+        return new Matrix(prod);
     }
     //multiplication with a constant
-    public static Matrix multiplyContstant(Matrix m1, int c){
+    public static Matrix multiplyConstant(Matrix m1, int c){
         int[][] arr = m1.getMatrix();
         int[][] prod = new int [arr.length][arr[0].length];
         for(int i=0; i<arr.length; i++){
@@ -266,10 +350,9 @@ class Matrix{
                 prod[i][j] = arr[i][j] * c;
             }
         }
-        Matrix result = new Matrix(prod);
-        return result;
+        return new Matrix(prod);
     }
-    //diagonaliation of a matrix
+    //diagonalization of a matrix
     public static Matrix diagonalize(Matrix m1, int x) {
         int[][] arr = m1.getMatrix();
         int[][] dia = new int [arr.length][arr[0].length];
@@ -282,7 +365,6 @@ class Matrix{
                 }
             }
         }
-        Matrix result = new Matrix(dia);
-        return result;
+        return new Matrix(dia);
     }
 }
