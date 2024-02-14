@@ -1,3 +1,11 @@
+/*
+Quilantang, Luis Marco R.
+ITE114 - IT2D.1
+MACHINE PROBLEM 1 - INFIX TO POSTFIX CONVERSION AND STACK OPERATIONS
+
+This program deals with Matrices using multidimensional arrays.
+This program applies the Matrix theory in its basic operations. The operations also uses concepts of multidimensional array.
+ */
 import java.util.*;
 public class MP1napud {
     public static Scanner scan = new Scanner(System.in);
