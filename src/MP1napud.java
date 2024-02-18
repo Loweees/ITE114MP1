@@ -311,7 +311,7 @@ public class MP1napud {
             if (x.getMatrix()[0].length != y.getMatrix().length) {
                 System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
             } else {
-                System.out.println("Let new Matrix = Matrix A * Matrix B");
+                System.out.println("Let new Matrix = Matrix "+n1+" * Matrix "+n2);
                 Matrix.multiplyTraverse(x, y);
                 prod = Matrix.multiply(x, y);
                 System.out.println("New Matrix:");
@@ -321,7 +321,7 @@ public class MP1napud {
             if (y.getMatrix()[0].length != x.getMatrix().length) {
                 System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
             } else {
-                System.out.println("Let new Matrix = Matrix B * Matrix A");
+                System.out.println("Let new Matrix = Matrix "+n2+" * Matrix "+n1);
                 Matrix.multiplyTraverse(y, x);
                 prod = Matrix.multiply(y, x);
                 System.out.println("New Matrix:");
