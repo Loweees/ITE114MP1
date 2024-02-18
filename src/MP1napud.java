@@ -40,12 +40,16 @@ public class MP1napud {
         int n = indexInput();
         System.out.println("How many columns do you want. Number of columns must be greater than or equal to 1 but not greater than 10.");
         int m = indexInput();
-        int[][] matrix = new int[n][m];
+        ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>(n);
+        for(int i = 0; i < n; i++){
+            matrix.add(new ArrayList<Integer>(m));
+        }
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 try {
                     System.out.print("Matrix " + name + " [" + i + "][" + j + "] = ");
-                    matrix[i][j] = Integer.parseInt(scan.nextLine());
+                    matrix.get(i).set(j, Integer.parseInt(scan.nextLine()));
                 } catch (NumberFormatException e) {
                     System.out.println("Input integers only. Try again.");
                     j--;
@@ -84,11 +88,11 @@ public class MP1napud {
         {
             case 0:
                 Matrix sum = new Matrix();
-                if(!((m1.getMatrix().length!=m2.getMatrix().length && m1.getMatrix()[0].length!=m2.getMatrix()[0].length)&&(m2.getMatrix().length!=m3.getMatrix().length && m2.getMatrix()[0].length!=m3.getMatrix()[0].length)&&(m1.getMatrix().length!=m3.getMatrix().length && m1.getMatrix()[0].length!=m3.getMatrix()[0].length))){
+                if(!((m1.getMatrix().size()!=m2.getMatrix().size() && m1.getMatrix().get(0).size()!=m2.getMatrix().get(0).size())&&(m2.getMatrix().size()!=m3.getMatrix().size() && m2.getMatrix().get(0).size()!=m3.getMatrix().get(0).size())&&(m1.getMatrix().size()!=m3.getMatrix().size() && m1.getMatrix().get(0).size()!=m3.getMatrix().get(0).size()))){
                     System.out.println("Matrices are not compatible, cannot do operation.");
                     break;
                 }
-                else if(m1.getMatrix().length==m2.getMatrix().length && m1.getMatrix()[0].length==m2.getMatrix()[0].length){
+                else if(m1.getMatrix().size()==m2.getMatrix().size() && m1.getMatrix().get(0).size()==m2.getMatrix().get(0).size()){
                     System.out.println("Matrices A and B are compatible.");
                     System.out.println("Let new Matrix = Matrix A + Matrix B");
                     Matrix.addTraverse(m1,m2);
@@ -96,7 +100,7 @@ public class MP1napud {
                     System.out.println("new Matrix:");
                     sum.printMatrix();
                 }
-                else if(m3.getMatrix().length==m2.getMatrix().length && m3.getMatrix()[0].length==m2.getMatrix()[0].length){
+                else if(m3.getMatrix().size()==m2.getMatrix().size() && m3.getMatrix().get(0).size()==m2.getMatrix().get(0).size()){
                     System.out.println("Matrices B and C are compatible.");
                     System.out.println("Let new Matrix = Matrix B + Matrix C");
                     Matrix.addTraverse(m2,m3);
@@ -104,7 +108,7 @@ public class MP1napud {
                     System.out.println("new Matrix:");
                     sum.printMatrix();
                 }
-                else if(m3.getMatrix().length==m1.getMatrix().length && m3.getMatrix()[0].length==m1.getMatrix()[0].length){
+                else if(m3.getMatrix().size()==m1.getMatrix().size() && m3.getMatrix().get(0).size()==m1.getMatrix().get(0).size()){
                     System.out.println("Matrices A and C are compatible.");
                     System.out.println("Let new Matrix = Matrix A + Matrix C");
                     Matrix.addTraverse(m1,m3);
@@ -117,7 +121,7 @@ public class MP1napud {
                 {
                     if(x==1){
                         Matrix another = createMatrix("new");
-                        if(sum.getMatrix().length!=another.getMatrix().length || sum.getMatrix()[0].length!=another.getMatrix()[0].length) {
+                        if(sum.getMatrix().size()!=another.getMatrix().size() || sum.getMatrix().get(0).size()!=another.getMatrix().get(0).size()) {
                             System.out.println("Matrices are not compatible, cannot do operation.");
                         }
                         else{
@@ -136,15 +140,15 @@ public class MP1napud {
                 break;
             case 1:
                 Matrix prod = new Matrix();
-                if(!((m1.getMatrix().length!=m2.getMatrix()[0].length || m1.getMatrix()[0].length!=m2.getMatrix().length)||(m2.getMatrix().length!=m3.getMatrix()[0].length || m2.getMatrix()[0].length!=m3.getMatrix().length)||(m1.getMatrix().length!=m3.getMatrix()[0].length || m1.getMatrix()[0].length!=m3.getMatrix().length))){
+                if(!((m1.getMatrix().size()!=m2.getMatrix().get(0).size() || m1.getMatrix().get(0).size()!=m2.getMatrix().size())||(m2.getMatrix().size()!=m3.getMatrix().get(0).size() || m2.getMatrix().get(0).size()!=m3.getMatrix().size())||(m1.getMatrix().size()!=m3.getMatrix().get(0).size() || m1.getMatrix().get(0).size()!=m3.getMatrix().size()))){
                     System.out.println("Matrices are not compatible, cannot do operation.");
                     break;
                 }
-                else if(m1.getMatrix().length==m2.getMatrix()[0].length || m1.getMatrix()[0].length==m2.getMatrix().length) {
+                else if(m1.getMatrix().size()==m2.getMatrix().get(0).size() || m1.getMatrix().get(0).size()==m2.getMatrix().size()) {
                     System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix A, 2-Matrix B");
                     int choose = choose();
                     if (choose == 1) {
-                        if (m1.getMatrix()[0].length != m2.getMatrix().length) {
+                        if (m1.getMatrix().get(0).size() != m2.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix A * Matrix B");
@@ -154,7 +158,7 @@ public class MP1napud {
                             prod.printMatrix();
                         }
                     } else if (choose == 2) {
-                        if (m2.getMatrix()[0].length != m1.getMatrix().length) {
+                        if (m2.getMatrix().get(0).size() != m1.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix B * Matrix A");
@@ -166,11 +170,11 @@ public class MP1napud {
                         }
                     }
                 }
-                else if(m2.getMatrix().length==m3.getMatrix()[0].length || m2.getMatrix()[0].length==m3.getMatrix().length) {
+                else if(m2.getMatrix().size()==m3.getMatrix().get(0).size() || m2.getMatrix().get(0).size()==m3.getMatrix().size()) {
                     System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix B, 2-Matrix C");
                     int choose = choose();
                     if (choose == 1) {
-                        if (m2.getMatrix()[0].length != m3.getMatrix().length) {
+                        if (m2.getMatrix().get(0).size() != m3.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix B * Matrix C");
@@ -180,7 +184,7 @@ public class MP1napud {
                             prod.printMatrix();
                         }
                     } else if (choose == 2) {
-                        if (m3.getMatrix()[0].length != m2.getMatrix().length) {
+                        if (m3.getMatrix().get(0).size() != m2.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix B * Matrix C");
@@ -191,11 +195,11 @@ public class MP1napud {
                         }
                     }
                 }
-                else if(m1.getMatrix().length==m3.getMatrix()[0].length || m1.getMatrix()[0].length==m3.getMatrix().length) {
+                else if(m1.getMatrix().size()==m3.getMatrix().get(0).size() || m1.getMatrix().get(0).size()==m3.getMatrix().size()) {
                     System.out.println("Choose which Matrix to become the multiplicand. 1-Matrix A, 2-Matrix C");
                     int choose = choose();
                     if (choose == 1) {
-                        if (m1.getMatrix()[0].length != m3.getMatrix().length) {
+                        if (m1.getMatrix().get(0).size() != m3.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix A * Matrix C");
@@ -205,7 +209,7 @@ public class MP1napud {
                             prod.printMatrix();
                         }
                     } else if (choose == 2) {
-                        if (m3.getMatrix()[0].length != m1.getMatrix().length) {
+                        if (m3.getMatrix().get(0).size() != m1.getMatrix().size()) {
                             System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = Matrix B * Matrix C");
@@ -222,14 +226,14 @@ public class MP1napud {
                 {
                     if(y==1){
                         Matrix another = createMatrix("new");
-                        if(prod.getMatrix().length!=another.getMatrix()[0].length && prod.getMatrix()[0].length!=another.getMatrix().length) {
+                        if(prod.getMatrix().size()!=another.getMatrix().get(0).size() && prod.getMatrix().get(0).size()!=another.getMatrix().size()) {
                             System.out.println("Matrices are not compatible, cannot do operation.");
                         }
                         else{
                             System.out.println("Choose which Matrix to become the multiplicand. 1-previous Matrix, 2-newly generated Matrix");
                             int choose = choose();
                             if (choose == 1) {
-                                if (prod.getMatrix()[0].length != another.getMatrix().length) {
+                                if (prod.getMatrix().get(0).size() != another.getMatrix().size()) {
                                     System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                                 } else {
                                     System.out.println("Let new Matrix = previous Matrix + newly generated Matrix");
@@ -239,7 +243,7 @@ public class MP1napud {
                                     prod.printMatrix();
                                 }
                             } else if (choose == 2) {
-                                if (another.getMatrix()[0].length != prod.getMatrix().length) {
+                                if (another.getMatrix().get(0).size() != prod.getMatrix().size()) {
                                     System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
                                 } else {
                                     System.out.println("Let new Matrix = newly generated Matrix + previous Matrix");
@@ -312,7 +316,7 @@ public class MP1napud {
                 int diag = integer();
                 switch(b) {
                     case 1:
-                        if (m1.getMatrix().length != m1.getMatrix()[0].length) {
+                        if (m1.getMatrix().size() != m1.getMatrix().get(0).size()) {
                             System.out.println("Matrix size are not equal, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = diagonalized Matrix A");
@@ -322,7 +326,7 @@ public class MP1napud {
                         }
                         break;
                     case 2:
-                        if (m2.getMatrix().length != m2.getMatrix()[0].length) {
+                        if (m2.getMatrix().size() != m2.getMatrix().get(0).size()) {
                             System.out.println("Matrix size are not equal, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = diagonalized Matrix B");
@@ -332,7 +336,7 @@ public class MP1napud {
                         }
                         break;
                     case 3:
-                        if (m3.getMatrix().length != m3.getMatrix()[0].length) {
+                        if (m3.getMatrix().size() != m3.getMatrix().get(0).size()) {
                             System.out.println("Matrix size are not equal, cannot do operation.");
                         } else {
                             System.out.println("Let new Matrix = diagonalized Matrix C");
@@ -429,20 +433,21 @@ public class MP1napud {
         }while(x<0 || x>3);
         return x;
     }
-}
+} 
 class Matrix{
-    int [][]matrix;     //2d array for the matrix
+    ArrayList<ArrayList<Integer>> matrix;     //2d array for the matrix
     //constructor of a matrix
     Matrix(){}
-    Matrix(int [][]matrix){
+    Matrix(ArrayList<ArrayList<Integer>> matrix){
         this.matrix = matrix;
     }
-    public int[][] getMatrix(){
+
+    public ArrayList<ArrayList<Integer>> getMatrix(){
         return this.matrix;
     }
     //prints the matrix
     public void printMatrix(){
-        for (int[] ints : this.matrix) {
+        for (ArrayList<Integer> ints : this.matrix) {
             System.out.print("|");
             for (int anInt : ints) {
                 System.out.printf("%3d ", anInt);
@@ -453,42 +458,46 @@ class Matrix{
     }
     //addition of two matrices
     public static void addTraverse(Matrix A, Matrix B){
-        int[][] m1 = A.getMatrix();
-        int[][] m2 = B.getMatrix();
-        for(int i=0; i<m1.length; i++){
+        ArrayList<ArrayList<Integer>> m1 = A.getMatrix();
+        ArrayList<ArrayList<Integer>> m2 = B.getMatrix();
+        for(int i=0; i<m1.size(); i++){
             System.out.print("|");
-            for(int j=0; j<m1[i].length; j++){
-                System.out.printf("%9s ", (m1[i][j]+" + "+m2[i][j]));
+            for(int j=0; j<m1.get(i).size(); j++){
+                System.out.printf("%9s ", (m1.get(i).get(j)+" + "+m2.get(i).get(j)));
             }
             System.out.print("|");
             System.out.println();
         }
     }
     public static Matrix add(Matrix A, Matrix B){
-        int[][] m1 = A.getMatrix();
-        int[][] m2 = B.getMatrix();
-        int[][] sum = new int [m1.length][m1[0].length];
-        for(int i=0; i<m1.length; i++){
-            for(int j=0; j<m1[i].length; j++){
-                sum[i][j] = m1[i][j] + m2[i][j];
+        ArrayList<ArrayList<Integer>> m1 = A.getMatrix();
+        ArrayList<ArrayList<Integer>> m2 = B.getMatrix();
+        ArrayList<ArrayList<Integer>> sum = new ArrayList<ArrayList<Integer>>(m1.size());
+        for(int i = 0; i < m1.size(); i++){
+            sum.add(new ArrayList<Integer>(m1.get(0).size()));
+        }
+
+        for(int i=0; i<m1.size(); i++){
+            for(int j=0; j<m1.get(i).size(); j++){
+                sum.get(i).set(j, m1.get(i).get(j) + m2.get(i).get(j));
             }
         }
         return new Matrix(sum);
     }
     //multiplication of two matrices
     public static void multiplyTraverse(Matrix A, Matrix B){
-        int[][] m1 = A.getMatrix();
-        int[][] m2 = B.getMatrix();
-        for(int i=0; i<m1.length; i++){
+        ArrayList<ArrayList<Integer>> m1 = A.getMatrix();
+        ArrayList<ArrayList<Integer>> m2 = B.getMatrix();
+        for(int i=0; i<m1.size(); i++){
             System.out.print("|");
-            for(int j=0; j<m2[0].length; j++){
-                for(int k = 0; k<m1[0].length; k++){
-                    if(k+1 == m1[0].length) {
-                        System.out.printf("(" + m1[i][k] + ")(" + m2[k][j] + ") %4s","");
+            for(int j=0; j<m2.get(0).size(); j++){
+                for(int k = 0; k<m1.get(0).size(); k++){
+                    if(k+1 == m1.get(0).size()) {
+                        System.out.printf("(" + m1.get(i).get(k) + ")(" + m2.get(i).get(k) + ") %4s","");
                     }else if(k==0){
-                        System.out.printf("%10s",("(" + m1[i][k] + ")(" + m2[k][j] + ")+"));
+                        System.out.printf("%10s",("(" + m1.get(i).get(k) + ")(" + m2.get(k).get(j) + ")+"));
                     }else{
-                        System.out.printf(("(" + m1[i][k] + ")(" + m2[k][j] + ")+"));
+                        System.out.printf(("(" + m1.get(i).get(k) + ")(" + m2.get(k).get(j) + ")+"));
                     }
                 }
             }
@@ -497,14 +506,18 @@ class Matrix{
         }
     }
     public static Matrix multiply(Matrix A, Matrix B){
-        int[][] m1 = A.getMatrix();
-        int[][] m2 = B.getMatrix();
-        int[][] prod = new int [m1.length][m2[0].length];
-        for(int i = 0; i<m1.length; i++){
-            for(int j = 0; j<m2[0].length; j++){
-                prod[i][j] = 0;
-                for(int k = 0; k<m1[0].length; k++){
-                    prod[i][j] = prod[i][j] + (m1[i][k] * m2[k][j]);
+        ArrayList<ArrayList<Integer>> m1 = A.getMatrix();
+        ArrayList<ArrayList<Integer>> m2 = B.getMatrix();
+        ArrayList<ArrayList<Integer>> prod = new ArrayList<ArrayList<Integer>>(m1.size());
+        for(int i = 0; i < m1.size(); i++){
+            prod.add(new ArrayList<Integer>(m2.get(0).size()));
+        }
+
+        for(int i = 0; i<m1.size(); i++){
+            for(int j = 0; j<m2.get(0).size(); j++){
+                prod.get(i).set(j, 0);
+                for(int k = 0; k<m1.get(0).size(); k++){
+                    prod.get(i).set(j, (prod.get(i).get(j) + (m1.get(i).get(k) * m2.get(k).get(j))));
                 }
             }
         }
@@ -512,37 +525,50 @@ class Matrix{
     }
     //multiplication with a constant
     public static void scalarMultiplyTraverse(Matrix m1, int c){
-        int[][] arr = m1.getMatrix();
-        int[][] prod = new int [arr.length][arr[0].length];
-        for(int i=0; i<arr.length; i++){
+        ArrayList<ArrayList<Integer>> arr = m1.getMatrix();
+        ArrayList<ArrayList<Integer>> prod = new ArrayList<ArrayList<Integer>>(arr.size());
+        for(int i = 0; i < arr.size(); i++){
+            prod.add(new ArrayList<Integer>(arr.get(0).size()));
+        }
+
+        for(int i=0; i<arr.size(); i++){
             System.out.print("|");
-            for(int j=0; j<arr[i].length; j++){
-                System.out.printf("%6s",(c+"("+arr[i][j]+")"));
+            for(int j=0; j<arr.get(i).size(); j++){
+                System.out.printf("%6s",(c+"("+arr.get(i).get(j)+")"));
             }
             System.out.print("|");
             System.out.println();
         }
     }
     public static Matrix scalarMultiply(Matrix m1, int c){
-        int[][] arr = m1.getMatrix();
-        int[][] prod = new int [arr.length][arr[0].length];
-        for(int i=0; i<arr.length; i++){
-            for(int j=0; j<arr[i].length; j++){
-                prod[i][j] = arr[i][j] * c;
+        ArrayList<ArrayList<Integer>> arr = m1.getMatrix();
+        ArrayList<ArrayList<Integer>> prod = new ArrayList<ArrayList<Integer>>(arr.size());
+        for(int i = 0; i < arr.size(); i++){
+            prod.add(new ArrayList<Integer>(arr.get(0).size()));
+        }
+
+        for(int i=0; i<arr.size(); i++){
+            for(int j=0; j<arr.get(i).size(); j++){
+                prod.get(i).set(j, (arr.get(i).get(j) * c));
             }
         }
         return new Matrix(prod);
     }
     //diagonalization of a matrix
     public static Matrix diagonalize(Matrix m1, int x) {
-        int[][] arr = m1.getMatrix();
-        int[][] dia = new int [arr.length][arr[0].length];
-        for(int i=0; i<arr.length; i++){
-            for(int j=0; j<arr[i].length; j++){
+        ArrayList<ArrayList<Integer>> arr = m1.getMatrix();
+        ArrayList<ArrayList<Integer>> dia = new ArrayList<ArrayList<Integer>>(arr.size());
+        for(int i = 0; i < arr.size(); i++){
+            dia.add(new ArrayList<Integer>(arr.get(0).size()));
+        }
+
+
+        for(int i=0; i<arr.size(); i++){
+            for(int j=0; j<arr.get(i).size(); j++){
                 if(i==j){
-                    dia[i][j] = x;
+                    dia.get(i).set(j, x);
                 }else{
-                    dia[i][j] = arr[i][j];
+                    dia.get(i).set(j, arr.get(i).get(j));
                 }
             }
         }
