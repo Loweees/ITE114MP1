@@ -9,10 +9,14 @@ This program applies the Matrix theory in its basic operations. The operations a
 import java.util.*;
 public class MP1napud {
     public static Scanner scan = new Scanner(System.in);
+    public static Matrix[] matrices = new Matrix[10];
+    public static int count;
+    public static String[] name = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q"};
+
     public static void main (String[] args){
-        Matrix A = createMatrix("A");
-        Matrix B = createMatrix("B");
-        Matrix C = createMatrix("C");
+        System.out.println("How many Matrices do you want to create? Must be at least 1 but no more than 10.");
+        int mat = range();
+        start(mat);
         System.out.println("----------------------------------------------------------------------");
 
 
@@ -20,18 +24,28 @@ public class MP1napud {
         do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
         {
             if(r==1) {
-                A = createMatrix("A");
-                B = createMatrix("B");
-                C = createMatrix("C");
-                operations(A,B,C);
-            }else if(r==2){
-                operations(A,B,C);
+                clear();
+                System.out.println("How many Matrices do you want to create? Must be at least 1 but no more than 10.");
+                mat = range();
+                start(mat);
+                operations(matrices, mat);
             }else{
-                operations(A,B,C);
+                operations(matrices, mat);
             }
             System.out.println("Do you want to input new Matrices? Press 1 for yes, Press 2 for no");
             r = choose();
         }while(true);
+    }
+    public static void start(int x){
+        for(int i = 0; i<x; i++){
+            matrices[i] = createMatrix(name[i]);
+            count++;
+        }
+    }
+    public static void clear(){
+        count = 0;
+        System.out.println("Clearing current inputs of matrices...");
+        Arrays.fill(matrices, null);
     }
     public static Matrix createMatrix(String name) {
         System.out.println("----------------------------------------------------------------------");
@@ -54,7 +68,7 @@ public class MP1napud {
         }
         return new Matrix(matrix);
     }
-    public static void operations(Matrix m1, Matrix m2, Matrix m3){
+    public static void operations(Matrix[] m, int a){
         System.out.println("Choose an operation to perform.");
         System.out.println("----------------------------------------------------------------------");
         System.out.println("0 - Matrix Addition");
@@ -84,19 +98,11 @@ public class MP1napud {
         {
             case 0:
                 Matrix sum = new Matrix();
-                int compa = sumCompatibility(m1,m2,m3);
-                if(sumCompatibility(m1,m2,m3)==0){
-                    System.out.println("Matrices are not compatible, cannot do operation.");
+                if(sumCompatibility(matrices)){
+                    sumMethod(matrices, sum);
+                }else{
+                    System.out.println("Matrix sizes are not equal, cannot do operation.");
                     break;
-                }
-                else if(sumCompatibility(m1,m2,m3)==1){
-                    sumMethod(sum,m1,m2,compa);
-                }
-                else if(sumCompatibility(m1,m2,m3)==2){
-                    sumMethod(sum,m2,m3,compa);
-                }
-                else if(sumCompatibility(m1,m2,m3)==3){
-                    sumMethod(sum,m1,m3,compa);
                 }
                 int x = 0;
                 do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
@@ -122,19 +128,11 @@ public class MP1napud {
                 break;
             case 1:
                 Matrix prod = new Matrix();
-                int comp = multiplyCompatibility(m1,m2,m3);
-                if(multiplyCompatibility(m1,m2,m3)==0){
+                if(multiplyCompatibility(matrices)){
+                    multiplyMethod(matrices, prod);
+                }else{
                     System.out.println("Matrices are not compatible, cannot do operation.");
                     break;
-                }
-                else if(multiplyCompatibility(m1,m2,m3)==1) {
-                    multiplyMethod(prod,m1,m2,comp);
-                }
-                else if(multiplyCompatibility(m1,m2,m3)==2) {
-                    multiplyMethod(prod,m2,m3,comp);
-                }
-                else if(multiplyCompatibility(m1,m2,m3)==3) {
-                    multiplyMethod(prod,m1,m3,comp);
                 }
                 int y = 0;
                 do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
@@ -152,6 +150,15 @@ public class MP1napud {
                             if (choose == 1) {
                                 if (prod.getMatrix()[0].length != another.getMatrix().length) {
                                     System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                                    System.out.println("Do you want to use the other matrix as the multiplicand? 1-Yes, 2-No");
+                                    int yn = choose();
+                                    if(yn==1){
+                                        System.out.println("Let new Matrix = newly generated Matrix + previous Matrix");
+                                        Matrix.multiplyTraverse(another, prod);
+                                        prod = Matrix.multiply(another, prod);
+                                        System.out.println("New Matrix:");
+                                        prod.printMatrix();
+                                    }
                                 } else {
                                     System.out.println("Let new Matrix = previous Matrix + newly generated Matrix");
                                     Matrix.multiplyTraverse(prod, another);
@@ -162,6 +169,14 @@ public class MP1napud {
                             } else if (choose == 2) {
                                 if (another.getMatrix()[0].length != prod.getMatrix().length) {
                                     System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                                    int yn = choose();
+                                    if(yn==1){
+                                        System.out.println("Let new Matrix = previous Matrix + newly generated Matrix");
+                                        Matrix.multiplyTraverse(prod, another);
+                                        prod = Matrix.multiply(prod, another);
+                                        System.out.println("New Matrix:");
+                                        prod.printMatrix();
+                                    }
                                 } else {
                                     System.out.println("Let new Matrix = newly generated Matrix + previous Matrix");
                                     Matrix.multiplyTraverse(another, prod);
@@ -181,22 +196,7 @@ public class MP1napud {
                 break;
             case 2:
                 Matrix sprod = new Matrix();
-                System.out.println("Choose which Matrix you want to use in this operation: 1-Matrix A, 2-Matrix B, 3-Matrix C");
-                int a = threeWay();
-                System.out.println("Input a constant that you want to multiply with the matrix.");
-                int xscalar = integer();
-                switch(a) {
-                    case 1:
-                        scalarMultplyMethod(sprod,m1,a,xscalar);
-                        break;
-                    case 2:
-                        scalarMultplyMethod(sprod,m2,a,xscalar);
-                        break;
-                    case 3:
-                        scalarMultplyMethod(sprod,m3,a,xscalar);
-                        break;
-                }
-                a=0;
+                sMultiply(matrices,sprod);
                 int z = 0;
                 do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
                 {
@@ -216,33 +216,7 @@ public class MP1napud {
                 }while(true);
             case 3:
                 Matrix dia = new Matrix();
-                System.out.println("Choose which Matrix you want to use in this operation: 1-Matrix A, 2-Matrix B, 3-Matrix C");
-                int b = threeWay();
-                System.out.println("Input a constant that will be used to diagonalize the matrix.");
-                int diag = integer();
-                switch(b) {
-                    case 1:
-                        if (m1.getMatrix().length != m1.getMatrix()[0].length) {
-                            System.out.println("Matrix size are not equal, cannot do operation.");
-                        } else {
-                            diagonalMethod(dia,m1,b,diag);
-                        }
-                        break;
-                    case 2:
-                        if (m2.getMatrix().length != m2.getMatrix()[0].length) {
-                            System.out.println("Matrix size are not equal, cannot do operation.");
-                        } else {
-                            diagonalMethod(dia,m2,b,diag);
-                        }
-                        break;
-                    case 3:
-                        if (m3.getMatrix().length != m3.getMatrix()[0].length) {
-                            System.out.println("Matrix size are not equal, cannot do operation.");
-                        } else {
-                            diagonalMethod(dia,m3,b,diag);
-                        }
-                        break;
-                }
+                diagonal(matrices,dia);
                 int xx = 0;
                 do  //this do-while loop handles the choice "yes or no" at the near end of the code. The loop ends when the user chooses no.
                 {
@@ -268,124 +242,158 @@ public class MP1napud {
         }
         System.out.println("----------------------------------------------------------------------");
     }
-    //method to print out the monologue for addition
-    public static void sumMethod(Matrix sum, Matrix x, Matrix y, int z){
-        String n1 = "";
-        String n2 = "";
-        if(z==1){
-            n1 = "A";
-            n2 = "B";
-        }else if(z==2){
-            n1 = "B";
-            n2 = "C";
-        }else if(z==3){
-            n1 = "A";
-            n2 = "C";
-        }
-        System.out.println("Matrices "+n1+" and "+n2+" are compatible.");
-        System.out.println("Let new Matrix = Matrix "+n1+" + Matrix "+n2);
-        Matrix.addTraverse(x,y);
-        sum = Matrix.add(x,y);
-        System.out.println("new Matrix:");
-        sum.printMatrix();
-    }
-    //method to print out the monologue for multiplication
-    public static void multiplyMethod(Matrix prod, Matrix x, Matrix y, int z){
-        String n1 = "";
-        String n2 = "";
-        if(z==1){
-            n1 = "A";
-            n2 = "B";
-        }else if(z==2){
-            n1 = "B";
-            n2 = "C";
-        }else if(z==3){
-            n1 = "A";
-            n2 = "C";
-        }
-        System.out.println("Compatibility found! Choose which Matrix to become the multiplicand. 1-Matrix "+n1+", 2-Matrix "+n2);
-        System.out.println("Note: Matrices can still be incompatible depending on which it becomes the multiplicand.");
-        System.out.print("Input choice here: ");
-        int choose = choose();
-        if (choose == 1) {
-            if (x.getMatrix()[0].length != y.getMatrix().length) {
-                System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
-            } else {
-                System.out.println("Let new Matrix = Matrix "+n1+" * Matrix "+n2);
-                Matrix.multiplyTraverse(x, y);
-                prod = Matrix.multiply(x, y);
-                System.out.println("New Matrix:");
-                prod.printMatrix();
-            }
-        } else if (choose == 2) {
-            if (y.getMatrix()[0].length != x.getMatrix().length) {
-                System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
-            } else {
-                System.out.println("Let new Matrix = Matrix "+n2+" * Matrix "+n1);
-                Matrix.multiplyTraverse(y, x);
-                prod = Matrix.multiply(y, x);
-                System.out.println("New Matrix:");
-                prod.printMatrix();
-
-            }
-        }
-    }
     //method to print out the monologue for scalar multiplication
     public static void scalarMultplyMethod(Matrix sprod, Matrix m, int z, int scalar){
-        String name = "";
-        if(z==1){
-            name = "A";
-        }else if(z==2){
-            name = "B";
-        }else if(z==3){
-            name = "C";
-        }
-        System.out.println("Let new Matrix = Matrix "+name+" * " +scalar);
+        System.out.println("Let new Matrix = Matrix "+name[z-1]+" * " +scalar);
         Matrix.scalarMultiplyTraverse(m, scalar);
         sprod = Matrix.scalarMultiply(m, scalar);
         System.out.println("new Matrix:");
         sprod.printMatrix();
     }
+    public static void sMultiply(Matrix[] m, Matrix sprod){
+        System.out.println("Choose which Matrix you want to use in this operation.");
+        int d = decision(count);
+        System.out.println("Input a constant that you want to multiply with the matrix.");
+        int xscalar = integer();
+        scalarMultplyMethod(sprod,m[d],d,xscalar);
+    }
     //method to print out the monologue for diagonalization
     public static void diagonalMethod(Matrix dia, Matrix m, int z, int diag){
-        String name = "";
-        if(z==1){
-            name = "A";
-        }else if(z==2){
-            name = "B";
-        }else if(z==3){
-            name = "C";
-        }
-        System.out.println("Let new Matrix = diagonalized Matrix "+name);
+        System.out.println("Let new Matrix = diagonalized Matrix "+name[z]);
         dia = Matrix.diagonalize(m, diag);
         System.out.println("New Matrix:");
         dia.printMatrix();
     }
+    public static void diagonal(Matrix[] m, Matrix dia){
+        System.out.println("Choose which Matrix you want to use in this operation.");
+        for(int i = 0; i<count; i++){
+            System.out.println((i+1)+" - Matrix "+name[i]);
+        }
+        int b = decision(count);
+        System.out.println("Input a constant that will be used to diagonalize the matrix.");
+        int diag = integer();
+        if (m[b].getMatrix().length != m[b].getMatrix()[0].length) {
+            System.out.println("Matrix size are not equal, cannot do operation.");
+        } else {
+            diagonalMethod(dia, m[b], b, diag);
+        }
+    }
     //method that looks for matrix size compatibility for addition
-    public static int sumCompatibility(Matrix m1, Matrix m2, Matrix m3){
-        if(m1.getMatrix().length==m2.getMatrix().length && m1.getMatrix()[0].length==m2.getMatrix()[0].length){
-            return 1;
+    public static boolean sumCompatibility(Matrix[] m){
+        boolean tf = false;
+        for(int i=0; i<count; i++){
+            for(int j=i+1; j<count; j++) {
+                if (m[i].getMatrix().length == m[j].getMatrix().length && m[i].getMatrix()[0].length==m[j].getMatrix()[0].length){
+                    tf = true;
+                    break;
+                }
+            }
+            if(tf) break;
         }
-        else if(m3.getMatrix().length==m2.getMatrix().length && m3.getMatrix()[0].length==m2.getMatrix()[0].length){
-            return 2;
+        return tf;
+    }
+    //method to print out the monologue for addition
+    public static void sumMethod(Matrix[] m, Matrix sum){
+        int dis = 0;
+        int[][] arr = new int[45][2];
+        System.out.println("Here are pairs of matrices that are compatible for addition:");
+        for(int i=0; i<count; i++){
+            for(int j=i+1; j<count; j++) {
+                if (m[i].getMatrix().length == m[j].getMatrix().length && m[i].getMatrix()[0].length==m[j].getMatrix()[0].length){
+                    System.out.println((dis+1)+" - Matrices "+name[i]+" and "+name[j]);
+                    arr[dis][0]=i;
+                    arr[dis][1]=j;
+                    dis++;
+                }
+            }
         }
-        else if(m3.getMatrix().length==m1.getMatrix().length && m3.getMatrix()[0].length==m1.getMatrix()[0].length){
-            return 3;
-        }
-        return 0;
+        System.out.print("Which pair do you want to perform the addition? ");
+        int des = decision(dis);
+        System.out.println("Let new Matrix = Matrix "+name[arr[des][0]]+" + Matrix "+name[arr[des][1]]);
+        Matrix.addTraverse(m[arr[des][0]],m[arr[des][1]]);
+        sum = Matrix.add(m[arr[des][0]],m[arr[des][1]]);
+        System.out.println("new Matrix:");
+        sum.printMatrix();
+
     }
     //method that looks for matrix size compatibility for multiplication
-    public static int multiplyCompatibility(Matrix m1, Matrix m2, Matrix m3){
-        if(m1.getMatrix().length==m2.getMatrix()[0].length || m1.getMatrix()[0].length==m2.getMatrix().length){
-            return 1;
+    public static boolean multiplyCompatibility(Matrix[] m){
+        boolean tf = false;
+        for(int i=0; i<count; i++){
+            for(int j=0; j<count; j++) {
+                if(j==i) {
+                    j++;
+                }
+                if (m[i].getMatrix().length == m[j].getMatrix()[0].length){
+                    tf = true;
+                    break;
+                }
+            }
+            if(tf) break;
         }
-        else if(m2.getMatrix().length==m3.getMatrix()[0].length || m2.getMatrix()[0].length==m3.getMatrix().length){
-            return 2;
+        return tf;
+    }
+    //method to print out the monologue for multiplication
+    public static void multiplyMethod(Matrix[] m, Matrix prod){
+        int dis = 0;
+        int[][] arr = new int[90][2];
+        System.out.println("Here are pairs of matrices that are compatible for addition:");
+        for(int i=0; i<count; i++){
+            for(int j=0; j<count; j++) {
+                if(j==i) {
+                    j++;
+                }else if (m[i].getMatrix().length == m[j].getMatrix()[0].length){
+                    System.out.println((dis+1)+" - Matrices "+name[i]+" and "+name[j]);
+                    arr[dis][0]=i;
+                    arr[dis][1]=j;
+                    dis++;
+                }
+            }
         }
-        else if(m1.getMatrix().length==m3.getMatrix()[0].length || m1.getMatrix()[0].length==m3.getMatrix().length){
-            return 3;
+        System.out.print("Which pair do you want to perform the addition? ");
+        int des = decision(dis);
+        System.out.println("Compatibility found! Choose which Matrix to become the multiplicand. 1-Matrix "+name[arr[des][0]]+", 2-Matrix "+name[arr[des][1]]);
+        System.out.println("Note: Matrices can still be incompatible depending on which it becomes the multiplicand.");
+        System.out.print("Input choice here: ");
+        int choose = choose();
+        if (choose == 1) {
+            if (m[arr[des][0]].getMatrix()[0].length != m[arr[des][1]].getMatrix().length) {
+                System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                System.out.println("Do you want to use the other matrix as the multiplicand? 1-Yes, 2-No");
+                int yn = choose();
+                if(yn==1){
+                    mult2(prod, m, arr, des);
+                }
+            } else {
+                mult1(prod, m, arr, des);
+            }
+        } else if (choose == 2) {
+            if (m[arr[des][1]].getMatrix()[0].length != m[arr[des][0]].getMatrix().length) {
+                System.out.println("Matrix size criteria for multiply are not met, cannot do operation.");
+                System.out.println("Do you want to use the other matrix as the multiplicand? 1-Yes, 2-No");
+                int yn = choose();
+                if(yn==1){
+                    mult1(prod, m, arr, des);
+                }
+            } else {
+                mult2(prod, m, arr, des);
+
+            }
         }
-        return 0;
+    }
+    public static void mult2(Matrix prod, Matrix[] m, int[][] arr, int des) {
+        System.out.println("Let new Matrix = Matrix "+name[arr[des][1]]+" * Matrix "+name[arr[des][0]]);
+        Matrix.multiplyTraverse(m[arr[des][1]], m[arr[des][0]]);
+        prod = Matrix.multiply(m[arr[des][1]], m[arr[des][0]]);
+        System.out.println("New Matrix:");
+        prod.printMatrix();
+    }
+    public static void mult1(Matrix prod, Matrix[] m, int[][] arr, int des) {
+        System.out.println("Let new Matrix = Matrix "+name[arr[des][0]]+" * Matrix "+name[arr[des][1]]);
+        Matrix.multiplyTraverse(m[arr[des][0]], m[arr[des][1]]);
+        prod = Matrix.multiply(m[arr[des][0]], m[arr[des][1]]);
+        System.out.println("New Matrix:");
+        prod.printMatrix();
     }
     public static int indexInput(){ //this method handles the index user input, it traps inputs that doesn't fit the criteria (size = (1<=n<=10)) or non integers
         try
@@ -410,6 +418,44 @@ public class MP1napud {
                 Integer.parseInt(scan.nextLine());
             }
         }
+    }
+    public static int decision(int y){
+        int x = 0;
+        do  //error trapping for choices, traps out input that are not of the choices indicated and non integer inputs.
+        {
+            try
+            {
+                x = Integer.parseInt(scan.nextLine());
+                if(x<1 || x>y) //this code runs if input is now an integer
+                {
+                    System.out.println("Input should be within range. Try again.");
+                }
+            }
+            catch(NumberFormatException e)  //it catches inputs that are not integers.
+            {
+                System.out.println("Input numbers only. Try again.");
+            }
+        }while(x<0 || x>y);
+        return x;
+    }
+    public static int range(){
+        int x = 0;
+        do  //error trapping for choices, traps out input that are not of the choices indicated and non integer inputs.
+        {
+            try
+            {
+                x = Integer.parseInt(scan.nextLine());
+                if(x<1 || x>10) //this code runs if input is now an integer
+                {
+                    System.out.println("Input should be within range. Try again.");
+                }
+            }
+            catch(NumberFormatException e)  //it catches inputs that are not integers.
+            {
+                System.out.println("Input numbers only. Try again.");
+            }
+        }while(x<0 || x>10);
+        return x;
     }
     public static int choose(){
         int x = 0;
