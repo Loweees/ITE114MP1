@@ -243,6 +243,7 @@ public class MP1napud {
                         break;
                     }
                     System.out.println("Do you want to generate and try another Matrix? 1-Yes, 2-No");
+
                     xx = choose();
                 }while(true);
                 break;
